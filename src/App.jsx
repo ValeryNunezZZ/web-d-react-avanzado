@@ -1,6 +1,9 @@
-// RAFC
+import { BasicForm } from './components/BasicForm.jsx'
+
 export const App = () => {
   return (
-    <div>APP</div>
+    <div>
+      <BasicForm />
+    </div>
   )
 }

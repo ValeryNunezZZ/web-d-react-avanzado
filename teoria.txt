@@ -1,0 +1,13 @@
+QUE ES BACKEND -> PROCESA SOLICITUDES DE LOS USUARIOS
+
+    1. El backend responde a las SOLICITUDES
+    2. Comunicación con las BD
+    3. Aplicación de las reglas de negocio
+    4. Comunicación con otros serivicios
+
+MIDDLEWARE -> Función intermediaria entre CLIENTE y SERVIDOR
+
+SERVIDOR -> Programa o Dispositivo que RESPONDE a las SOLICITUDES de un CLIENTE
+
+
+INICIALIZAR EL SERVIDOR -> npm init -y

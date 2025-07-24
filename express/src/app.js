@@ -86,6 +86,22 @@ app.get('/api/peliculas/comedia/:titulo', (req, res) => {
   res.send(infoPeliculas.comedia)
 }) */
 
+// ESTO ES UN MIDDLEWARE
+/* 	Middleware that parses JSON request bodies to an object => express.json() */
+/* Adds the JSON parser middleware to your Express app => app.use(express.json()) */
+app.use(express.json())
+app.post('/api/peliculas', (req, res) => {
+  const nuevaPelicula = req.body
+
+  // Lo que nos llega del body
+  console.log(nuevaPelicula)
+  // Mensaje que se envía luego de recibir la info
+  res.status(201).send({
+    mensaje: 'La pelicula se recibió con exito',
+    datos: nuevaPelicula
+  })
+})
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`)
 })

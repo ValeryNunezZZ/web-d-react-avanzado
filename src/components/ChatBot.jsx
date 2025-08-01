@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useContext } from 'react'
 import { ChatContext } from '../context/ChatContext'
 import useOllama from '../hooks/useOllama'
+import '../ChatBot.css'
 
 const schema = yup.object({
   userInput: yup.string().min(3, 'Write at least 3 characters').required('This field is required')
@@ -32,7 +33,7 @@ export const ChatBot = () => {
     }
   }
 
-  return (
+  /*   return (
     <>
       <div>
         <form onSubmit={handleSubmit(handlePregunta)}>
@@ -55,5 +56,31 @@ export const ChatBot = () => {
         {state.loading && 'Loading...'}
       </div>
     </>
+  ) */
+
+  return (
+    <div className='chat-container'>
+
+      <div className='chat-messages'>
+        {state.messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`message ${msg.from === 'user' ? 'user' : 'bot'}`}
+          >
+            {msg.text}
+          </div>
+        ))}
+        {state.loading && <p className='loading'>Generando respuesta 🚀</p>}
+      </div>
+      <form onSubmit={handleSubmit(handlePregunta)}>
+        <input
+          type='text'
+          {...register('userInput')}
+          placeholder='Escribe tu mensaje...'
+        />
+        <button type='submit'>Preguntar</button>
+      </form>
+      {errors.userInput && <p>{errors.userInput.message}</p>}
+    </div>
   )
 }

@@ -1,107 +1,107 @@
-const { infoPeliculas } = require('./peliculas')
-/* import { config } from 'dotenv' */
-require('dotenv').config()
-console.log(process.env.PORT)
-console.log(process.env.NOMBRE)
+/* IMPORTAR EXPRESS COMMONJS */
 
-// Se importa el módulo de express
-const express = require('express')
+/* const express = require('express')
+require('dotenv').config() */
 
-// Se crea una aplicación de EXPRESS
+// IMPORTAR EXPRESS Y DOTEENV COS ESMODULES
+
+import express from 'express'
+import dotenv from 'dotenv'
+// nativo de node que nos permite manipular archivos
+import fs from 'fs'
+
+dotenv.config()
+
+// 2. CREAR LA APLICACION DE EXPRESS
+
 const app = express()
+const PORT = process.env.PORT
 
-// Puerto por el que va a escuchar el servidor
-const PORT = 3000
+// funcion que lee el archivo con fs
+const readData = () => {
+  try {
+    // maneja la parte asincrona automaticamente
+    const data = fs.readFileSync('./src/db.json')
+    return JSON.parse(data)
+  } catch (e) {
+    console.error(e)
+  }
+}
 
-// RUTA RAIZ /
+// funcion que escribe dentro del .json
+
+const writeData = (data) => {
+  try {
+    // maneja la parte asincrona automaticamente
+    fs.writeFileSync('./src/db.json', JSON.stringify(data))
+    return JSON.parse(data)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 app.get('/', (req, res) => {
-  res.send('Hola mundo')
+  res.send('hola mundo')
 })
 
-app.get('/api/peliculas', (req, res) => {
-  // res => Nos permite enviar info
-
-  res.send(infoPeliculas)
+app.get('/peliculas', (req, res) => {
+  const data = readData()
+  // muestra la info en formatito json
+  res.json(data)
 })
 
-app.get('/api/peliculas/accion', (req, res) => {
-  // res => Nos permite enviar info
-
-  res.send(infoPeliculas.accion)
+app.get('/peliculas/:id', (req, res) => {
+  const id = parseInt(req.params.id)
+  const resultado = readData().accion.find(pelicula => pelicula.id === id)
+  // muestra la info en formatito json
+  res.json(resultado)
 })
 
-/* // El :/titulo se pone, porqeu se espera que el usuario escriba algo
-app.get('/api/peliculas/accion/:titulo', (req, res) => {
-  // Significa que de la url vamos a requerir o necesitar la variable titulo que se va a guardar en t
-  const t = req.params.titulo
-
-  const resultados = infoPeliculas.accion.filter(pelicula => {
-    return pelicula.titulo === t
-  })
-
-  if (resultados.length === 0) {
-    return res.status(400).send('No se encontraron coincidencias')
-  }
-
-  res.send(resultados)
-}) */
-
-// VAMO A HACER AHORA UNA RUTA PERO CON DOS PARÁMETROS
-app.get('/api/peliculas/accion/titulo/:titulo/:year', (req, res) => {
-  // Como son ahora dos parámetros vamos a desustructurar
-  const { t, y } = req.params
-
-  const resultados = infoPeliculas.accion.filter(pelicula => {
-    return pelicula.titulo === t && pelicula.year === Number(y)
-  })
-
-  if (resultados.length === 0) {
-    return res.status(400).send(`No se encontraron coincidencias para la película ${t} del año ${y}`)
-  }
-
-  res.send(resultados)
-})
-
-// PARÁMETRO QUERY (sintaxis ejemplo): http://localhost:3000/api/?cualquierNombreQueLeDemos=cualquierValorQueIngreseElUuario
-
-app.get('/api/peliculas/comedia/:titulo', (req, res) => {
-  const t = req.params.titulo
-
-  const resultados = infoPeliculas.filter(pelicula => {
-    return pelicula.comedia.titulo === t
-  })
-
-  if (req.query.ordenar === 'year') {
-    return infoPeliculas.comedia.sort((a, b) => {
-      return a.year - b.year
-    })
-  }
-
-  res.send(resultados)
-})
-
-/* app.get('/api/peliculas/comedia', (req, res) => {
-  // res => Nos permite enviar info
-
-  res.send(infoPeliculas.comedia)
-}) */
-
-// ESTO ES UN MIDDLEWARE
-/* 	Middleware that parses JSON request bodies to an object => express.json() */
-/* Adds the JSON parser middleware to your Express app => app.use(express.json()) */
+// permite que se interprete correctamente nuestra informacion recibidad como JSON
 app.use(express.json())
-app.post('/api/peliculas', (req, res) => {
-  const nuevaPelicula = req.body
 
-  // Lo que nos llega del body
-  console.log(nuevaPelicula)
-  // Mensaje que se envía luego de recibir la info
-  res.status(201).send({
-    mensaje: 'La pelicula se recibió con exito',
-    datos: nuevaPelicula
-  })
+app.post('/peliculas', (req, res) => {
+  const data = readData()
+  const body = req.body
+
+  const newMovie = {
+    id: data.accion.length + 1,
+    ...body
+  }
+
+  data.accion.push(newMovie)
+  writeData(data)
+  res.json(newMovie)
+})
+
+app.put('/peliculas/:id', (req, res) => {
+  const data = readData()
+  const id = parseInt(req.params.id)
+  const body = req.body
+
+  const peliculaIndex = data.accion.findIndex(movie => movie.id === id)
+
+  data.accion[peliculaIndex] = {
+    ...data.accion[peliculaIndex],
+    ...body
+  }
+
+  writeData(data)
+  res.json({ message: 'Pelicula actualizada correctamente' })
+})
+
+app.delete('/peliculas/:id', (req, res) => {
+  const data = readData()
+  const id = parseInt(req.params.id)
+
+  const peliculaIndex = data.accion.findIndex(movie => movie.id === id)
+
+  data.accion.splice(peliculaIndex, 1)
+
+  writeData(data)
+  res.json({ message: 'Pelicula eliminada correctamente' })
 })
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`)
+  console.log('SERVIDOR ESCUCHANDO EN EL PUERTO ', PORT)
 })

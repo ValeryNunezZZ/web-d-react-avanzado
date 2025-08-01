@@ -11,3 +11,14 @@ SERVIDOR -> Programa o Dispositivo que RESPONDE a las SOLICITUDES de un CLIENTE
 
 
 INICIALIZAR EL SERVIDOR -> npm init -y
+
+
+
+API REST 
+
+USO DE HTTP como protocolo de comunicación
+
+post -> crea
+get -> obtine
+put -> actualiza
+delete -> borra

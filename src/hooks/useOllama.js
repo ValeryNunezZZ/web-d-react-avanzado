@@ -1,25 +1,22 @@
+/* import axios from 'axios'
+
+export const useOllama = () => {
+  const sendMessage = async (prompt) => {
+    const res = await axios.post('http://localhost:3001/api/chat', { prompt })
+    return res
+  }
+
+  return { sendMessage }
+}
+ */
+
 import axios from 'axios'
 
-const useOllama = () => {
-  const sendMessage = async (userPrompt) => {
-    try {
-      const res = await axios.post('http://localhost:11434/api/generate',
-        {
-          model: 'llama2',
-          prompt: userPrompt,
-          stream: false
-        }
-
-      )
-      return res
-    } catch (e) {
-      console.error(e)
-    }
+export const useOllama = () => {
+  const sendMessage = async (prompt) => {
+    const res = await axios.post('http://localhost:3001/api/chat', { prompt })
+    return res
   }
 
-  return {
-    sendMessage
-  }
+  return { sendMessage }
 }
-
-export default useOllama

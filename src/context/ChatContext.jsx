@@ -1,8 +1,7 @@
 import { createContext, useReducer } from 'react'
-// 1. create the global context
-// le da un contexto global a ChatContext
+
+// 1. Crear el contexto global
 export const ChatContext = createContext()
-// 2. Provider
 
 const initialState = {
   messages: []
@@ -10,30 +9,25 @@ const initialState = {
 
 const chatReducer = (state, action) => {
   switch (action.type) {
-    case 'ADD-MESSAGE':
+    case 'ADD_MESSAGE':
       console.log('agregando mensaje...')
       console.log(state)
-
       return { ...state, messages: [...state.messages, action.payload] }
-
-    case 'SET-LOADING':
+    case 'SET_LOADING':
       return { ...state, loading: action.payload }
-
     default:
       return state
   }
 }
 
-// el provider encierra
+// 2. Provider
 
 export const ChatProvider = ({ children }) => {
   const [state, dispatch] = useReducer(chatReducer, initialState)
 
   return (
-
     <ChatContext.Provider value={{ state, dispatch }}>
       {children}
     </ChatContext.Provider>
-
   )
 }

@@ -41,7 +41,7 @@ app.listen(PORT, () => {
 import express from 'express'
 import cors from 'cors'
 import { generateFromOllama } from './ollamaService.js'
-/* import db from './db.js' */
+import db from './db.js'
 
 const app = express()
 const PORT = 3001
@@ -67,14 +67,14 @@ app.post('/api/chat', async (req, res) => {
 })
 
 // GET: obtener mensajes
-/* app.get('/api/messages', async (req, res) => {
+app.get('/api/messages', async (req, res) => {
   await db.read()
-  res.json(db.data.messages)
-}) */
+  res.json(db.data.message)
+})
 
 // POST: Ruta para agregar nuevo mensaje
-/* app.post('/api/messages', async (req, res) => {
-  // text, sender
+app.post('/api/messages', async (req, res) => {
+  // text, sender: mensaje y quien envia el mensaje
   const { text, sender } = req.body
   if (!text || !sender) {
     return res.status(400).json({ error: 'Faltan campos en el objeto' })
@@ -92,7 +92,7 @@ app.post('/api/chat', async (req, res) => {
   await db.write()
 
   res.status(201).json(newMessage)
-}) */
+})
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en: http://localhost:${PORT}`)

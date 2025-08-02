@@ -1,0 +1,24 @@
+import { Low } from 'lowdb'
+import { JSONFile } from 'lowdb/node'
+import { join } from 'path'
+import { fileURLToPath } from 'url'
+
+// Rutas
+const __filename = fileURLToPath(import.meta.url)
+// definiendo la ruta del directorio padre
+const __dirname = join(__filename, '..')
+const file = join(__dirname, 'db.json')
+const adapter = new JSONFile(file)
+const defaultData = { messages: [] }
+
+// Low nos va a paermitir la lectura y escritura de datos
+const db = new Low(adapter, defaultData)
+
+await db.read()
+
+await db.write()
+
+/* console.log('Ruta: ', __filename)
+console.log('Ruta: ', import.meta.url) */
+
+export default db
